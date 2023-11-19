@@ -1,5 +1,5 @@
 import re
-from itertools import permutations
+from itertools import permutations, combinations
 
 
 def attr_brute(tag: str, req_attr: list[str], opt_attr: list[str] = []) -> list[str]:
@@ -15,29 +15,35 @@ def attr_brute(tag: str, req_attr: list[str], opt_attr: list[str] = []) -> list[
     """
 
     if tag not in ["link", "br", "hr", "img", "input"]:
-        attr_rules = [r"<" + tag + r">"]
+        if len(req_attr) == 0:
+            attr_rules = [re.compile(r"<" + tag + r"\s*>")]
+        else:
+            attr_rules = []
 
-        while len(opt_attr) > 0:
-            for i in range(len(opt_attr)):
-                attr_rule = req_attr + opt_attr
-                for kemungkinan in permutations(attr_rule, len(attr_rule)):
-                    attr_rule = r"<" + tag + r"\s+" + r"\s+".join(kemungkinan) + r"\s*>"
-                    attr_rules.append(attr_rule)
-            opt_attr.pop()
-
-            # append closing tag
-        attr_rules.append(r"</" + tag + r">")
-    else:
-        attr_rules = attr_rules = [r"<" + tag + r"/>"]
-        while len(opt_attr) > 0:
-            for i in range(len(opt_attr)):
-                attr_rule = req_attr + opt_attr
-                for kemungkinan in permutations(attr_rule, len(attr_rule)):
-                    attr_rule = (
-                        r"<" + tag + r"\s+" + r"\s+".join(kemungkinan) + r"\s*/>"
+        # req_attr must exist in every combination
+        for i in range(0, len(opt_attr) + 1):
+            for kemungkinan in combinations(opt_attr, i):
+                attr_rule = req_attr + list(kemungkinan)
+                for rule in permutations(attr_rule):
+                    attr_rules.append(
+                        re.compile(r"<" + tag + r"\s+" + r"\s+".join(rule) + r"\s*>")
                     )
-                    attr_rules.append(attr_rule)
-            opt_attr.pop()
+
+        # append closing tag
+        attr_rules.append(re.compile(r"</" + tag + r"\s*>"))
+    else:
+        if len(req_attr) == 0:
+            attr_rules = attr_rules = [re.compile(r"<" + tag + r"/>")]
+        else:
+            attr_rules = []
+
+        for i in range(0, len(opt_attr) + 1):
+            for kemungkinan in combinations(opt_attr, i):
+                attr_rule = req_attr + list(kemungkinan)
+                for rule in permutations(attr_rule):
+                    attr_rules.append(
+                        re.compile(r"<" + tag + r"\s+" + r"\s+".join(rule) + r"\s*/>")
+                    )
 
     return attr_rules
 
