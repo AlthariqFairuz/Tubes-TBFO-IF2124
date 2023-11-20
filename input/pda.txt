@@ -1,0 +1,7 @@
+q0 q1 q2 q3 q4
+<html> </html> <head> </head> <body> </body> <title> </title> <link /> <script> </script> <h1> </h1> <h2> </h2> <h3> </h3> <h4> </h4> <h5> </h5> <h6> </h6> <p> </p> <br /> <em> </em> <b> </b> <abbr> </abbr> <strong> </strong> <small> </small> <hr /> <div> </div> <a> </a> <img /> <button> </button> <form> </form> <input /> <table> </table> <tr> </tr> <td> </td> <th> </th>
+HTML HEAD BODY TITLE SCRIPT H1 H2 H3 H4 H5 H6 P EM B ABBR STRONG SMALL DIV A BUTTON FORM TABLE TR TD TH
+q0
+HTML
+q4
+E
