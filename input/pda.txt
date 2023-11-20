@@ -1,18 +1,102 @@
 q0 q1 q2 q3 q4
-<html> </html> <head> </head> <body> </body> <title> </title> <link /> <script> </script> <h1> </h1> <h2> </h2> <h3> </h3> <h4> </h4> <h5> </h5> <h6> </h6> <p> </p> <br /> <em> </em> <b> </b> <abbr> </abbr> <strong> </strong> <small> </small> <hr /> <div> </div> <a> </a> <img /> <button> </button> <form> </form> <input /> <table> </table> <tr> </tr> <td> </td> <th> </th>
-Html Head Body Title Script H1 H2 H3 H4 H5 H6 P Em B Abbr Strong Small Div A Button Form Table Tr Td Th
+<html> </html> <head> </head> <body> </body> <title> </title> <link> </link> <script> </script> <h1> </h1> <h2> </h2> <h3> </h3> <h4> </h4> <h5> </h5> <h6> </h6> <p> </p> <br> </br> <em> </em> <b> </b> <abbr> </abbr> <strong> </strong> <small> </small> <hr> </hr> <div> </div> <a> </a> <img> </img> <button> </button> <form> </form> <input> </input> <table> </table> <tr> </tr> <td> </td> <th> </th> text rel href src alt type action method type
+Html Head Body Title Link Script H1 H2 H3 H4 H5 H6 P Br Em B Abbr Strong Small Hr Div A Img Button Form Input Table Tr Td Th
 q0
 Html
 q4
 E
 q0 <html> Html q1 Html
+
+q1 id Html q1 Html
+q1 class Html q1 Html
+q1 style Html q1 Html
+
 q1 <head> Html q2 HeadHtml
+q2 id Head q2 Head
+q2 class Head q2 Head
+q2 style Head q2 Head
+
 q2 <title> Head q2 TitleHead
+q2 id Title q2 Title
+q2 class Title q2 Title
+q2 style Title q2 Title
 q2 text Title q2 Title
 q2 </title> Title q2 e
-q2 <link /> Head q2 Head
+
+q2 <link> Head q2 RelLinkHead
+q2 rel Rel q2 e
+q2 href Rel q2 Rel
+q2 href Link q2 Link
+q2 id Rel q2 Rel
+q2 id Link q2 Link
+q2 class Rel q2 Rel
+q2 class Link q2 Link
+q2 style Rel q2 Rel
+q2 style Link q2 Link
+q2 </link> Link q2 e
+
+q2 <script> Head q2 ScriptHead
+q2 src Script q2 Script
+q2 id Script q2 Script
+q2 class Script q2 Script
+q2 style Script q2 Script
+q2 text Script q2 Script
+q2 </script> Script q2 e
+
 q2 </head> Head q2 e
+
 q2 <body> Html q3 BodyHtml
+q3 id Body q3 Body
+q3 class Body q3 Body
+q3 style Body q3 Body
+
+q3 <link> Body q3 RelLinkBody
+q3 rel Rel q3 e
+q3 href Rel q3 Rel
+q3 href Link q3 Link
+q3 id Rel q3 Rel
+q3 id Link q3 Link
+q3 class Rel q3 Rel
+q3 class Link q3 Link
+q3 style Rel q3 Rel
+q3 style Link q3 Link
+q3 </link> Link q3 e
+
+q3 <link> Div q3 RelLinkDiv
+q3 rel Rel q3 e
+q3 href Rel q3 Rel
+q3 href Link q3 Link
+q3 id Rel q3 Rel
+q3 id Link q3 Link
+q3 class Rel q3 Rel
+q3 class Link q3 Link
+q3 style Rel q3 Rel
+q3 style Link q3 Link
+q3 </link> Link q3 e
+
+q3 <script> Body q3 ScriptBody
+q3 src Script q3 Script
+q3 id Script q3 Script
+q3 class Script q3 Script
+q3 style Script q3 Script
+q3 text Script q3 Script
+q3 </script> Script q3 e
+
+q3 <script> Div q3 ScriptDiv
+q3 src Script q3 Script
+q3 id Script q3 Script
+q3 class Script q3 Script
+q3 style Script q3 Script
+q3 text Script q3 Script
+q3 </script> Script q3 e
+
+q3 <h1> Body q3 H1Body
+q3 id H1 q3 H1
+q3 class H1 q3 H1
+q3 style H1 q3 H1
+q3 text H1 q3 H1
+q3 </h1> H1 q3 e
 
 q3 </body> Body q3 e
+
 q3 </html> Html q4 e
