@@ -24,7 +24,7 @@ accept_with = ""
 
 def generate(state, input, stack, config):
     global productions
-    global founds
+    global found
 
     total = 0
 
