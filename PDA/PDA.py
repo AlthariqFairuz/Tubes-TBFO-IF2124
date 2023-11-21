@@ -1,5 +1,3 @@
-import os
-
 # Simpan kata yang akan di cek oleh PDA
 start_input = "" 
 
@@ -21,7 +19,7 @@ stack_start = ""
 # array of acceptable states
 acceptable_states = []
 
-# E - accepted by empty stack or F - acceptable state (default is false)
+# E = empty stack, F = final state
 accept_with = ""
 
 def generate(state, input, stack, config):
@@ -44,7 +42,7 @@ def generate(state, input, stack, config):
         return 1
     
 	# Jika tidak ditemukan, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
-    moves = get_moves(state, input, stack, config)
+    moves = get_moves(state, input, stack)
     if len(moves) == 0:
 		# Jika tidak ada gerakan yang mungkin, maka akan mengembalikan 0
         return 0
@@ -56,7 +54,7 @@ def generate(state, input, stack, config):
     return total
 
 # Fungsi untuk mendapatkan semua gerakan yang mungkin dari state, input, dan stack yang diberikan
-def get_moves(state, input, stack, config):
+def get_moves(state, input, stack):
     global productions
 
     moves = []
@@ -99,40 +97,37 @@ def is_found(state, input, stack):
     global accept_with
     global acceptable_states
 
-    # check if all symbols are read
+    # Cek apakah semua symbol sudah dibaca
     if len(input) > 0: 
         return 0
 
-    # check if we accept with empty stack or end state
+    # Cek apakah diterima dengan empty stack atau final state
     if accept_with == "E":
-        if len(stack) < 1:  # accept if stack is empty
+        if len(stack) < 1: 
             return 1
 
         return 0
 
     else:
         for i in acceptable_states:
-            if i == state: # accept if we are in terminal state
+            if i == state: 
                 return 1
 
         return 0
 
-# Buat mencetak semua konfigurasi yang diterima
-def print_config(config):
-    for i in config:
-        print(i)
-
 # Fungsi ini membaca file dan mengurai PDA darinya.
-def parse_file(filename):
+def file_parser(filename):
     global productions
     global start_symbol
     global start_stack
     global acceptable_states
     global accept_with
 
+    # Baca file
     try:
         lines = [line.rstrip() for line in open(filename)]
 
+    # Jika error, return false
     except:
         return 0
 
@@ -142,42 +137,59 @@ def parse_file(filename):
 
     acceptable_states.extend(lines[5].split())
 
-    # E - accept on empty stack or F - acceptable state (default is false)
+    # E = empty stack, F = final state
     accept_with = lines[6] 
 
-    # add rules
+    # Add rules
     for i in range(7, len(lines)):
         production = lines[i].split()
-
         configuration = [(production[1], production[2], production[4], production[3])]
-
+        
         if not production[0] in productions.keys(): 
             productions[production[0]] = []
 
         configuration = [tuple(s if s != "e" else "" for s in tup) for tup in configuration]
 
         productions[production[0]].extend(configuration)
-
-    print(productions)
-    print(start_symbol)
-    print(start_stack)
-    print(acceptable_states)
-    print(accept_with)
+        
+    print("Start state: ",start_symbol)
+    print("Staert Stack: ",start_stack)
+    print("Final states: ",acceptable_states)
+    if accept_with == "E":
+        print("Accept with empty stack")
+    else:
+        print("Accept with final state")
+    print("List of production rules: ")
+    for i in range (7, len(lines)):
+        rules= lines[i].split()
+        print(rules)
+    print("\n")
 
     return 1
 
-# # Ask the user for the name of the configuration file
-# config_file = input("Masukkan nama file konfigurasi: ")
+# Ask the user for the name of the configuration file
+config_file = input("Masukkan nama file konfigurasi: ")
 
-# # Parse the configuration file
-# if not parse_file(config_file):
-#     print("Gagal membaca file konfigurasi.")
-#     exit(1)
+# Parse the configuration file
+if not file_parser(config_file):
+    print("Gagal membaca file konfigurasi.")
+    exit(1)
 
-# # Ask the user for the word to check
-# start_input = input("Masukkan kata yang akan dicek: ")
+start_input = input("Masukkan kata yang akan dicek: ")
+def load_html (start_input):
+    with open(start_input, 'r') as file:
+        html = file.read()
+    return html
 
-# # Generate the automaton with the given start symbol, input word, and start stack symbol
-# result = generate(start_symbol, start_input, start_stack, [(start_symbol, start_input, start_stack)])
+start_input = load_html(start_input)
 
-# print(result)
+# Generate the automaton with the given start symbol, input word, and start stack symbol
+result = generate(start_symbol, start_input, start_stack, [(start_symbol, start_input, start_stack)])
+if result :
+    print("""
+    ██╗░░░██╗░█████╗░██╗░░░░░██╗██████╗░  ██╗░░██╗████████╗███╗░░░███╗██╗░░░░░
+    ██║░░░██║██╔══██╗██║░░░░░██║██╔══██╗  ██║░░██║╚══██╔══╝████╗░████║██║░░░░░
+    ╚██╗░██╔╝███████║██║░░░░░██║██║░░██║  ███████║░░░██║░░░██╔████╔██║██║░░░░░
+    ░╚████╔╝░██╔══██║██║░░░░░██║██║░░██║  ██╔══██║░░░██║░░░██║╚██╔╝██║██║░░░░░
+    ░░╚██╔╝░░██║░░██║███████╗██║██████╔╝  ██║░░██║░░░██║░░░██║░╚═╝░██║███████╗
+    ░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚═╝╚═════╝░  ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░░░░╚═╝╚══════╝""")
