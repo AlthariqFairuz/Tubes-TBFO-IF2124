@@ -24,7 +24,7 @@ accept_with = ""
 
 def generate(state, input, stack, config):
     global productions
-    global found
+    global founds
 
     total = 0
 
@@ -44,7 +44,7 @@ def generate(state, input, stack, config):
 	# Jika tidak ditemukan, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
     moves = get_moves(state, input, stack)
     if len(moves) == 0:
-		# Jika tidak ada gerakan yang mungkin, maka akan mengembalikan 0
+		# Jika tidak ada gerakan yang mungkin untuk suatu state, maka akan mengembalikan 0
         return 0
 
 	# Jika ada gerakan yang mungkin, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
@@ -69,11 +69,10 @@ def get_moves(state, input, stack):
             new = []
 
             new.append(current[3])
-
             # Baca symbol input jika masih ada
             if len(current[0]) > 0:
-                if len(input) > 0 and input[0] == current[0]:
-                    new.append(input[1:])
+                if len(input) > 0 and input[:len(current[0])] == current[0]:
+                    new.append(input[len(current[0]):])
                 else:
                     continue
             else:            
@@ -81,15 +80,15 @@ def get_moves(state, input, stack):
 
             # Baca stack symbol
             if len(current[1]) > 0:
-                if len(stack) > 0 and stack[0] == current[1]:
-                    new.append(current[2] + stack[1:])
+                if len(stack) > 0 and stack[:len(current[1])] == current[1]:
+                    new.append(current[2] + stack[len(current[1]):])
                 else:
                     continue
             else:
                 new.append(current[2] + stack)
 
             moves.append(new)
-
+    print(moves)
     return moves
 
 # Fungsi ini memeriksa apakah kata input diterima sesuai dengan kondisi penerimaan.
@@ -131,6 +130,7 @@ def file_parser(filename):
     except:
         return 0
 
+    start_stack = lines[2]
     start_symbol = lines[3]
 
     start_stack = lines[4]
@@ -142,16 +142,16 @@ def file_parser(filename):
 
     # Add rules
     for i in range(7, len(lines)):
-        production = lines[i].split()
-        configuration = [(production[1], production[2], production[4], production[3])]
-        
-        if not production[0] in productions.keys(): 
-            productions[production[0]] = []
+        line = lines[i].strip()  # Abaikan Newline atau Whitespace
+        if line:  # Line akan di split jika tidak ada newline
+            production = line.split()
+            configuration = [(production[1], production[2], production[4], production[3])]
+            if not production[0] in productions.keys(): 
+                productions[production[0]] = []
+            configuration = [tuple(s if s != "e" else "" for s in tup) for tup in configuration]
 
-        configuration = [tuple(s if s != "e" else "" for s in tup) for tup in configuration]
+            productions[production[0]].extend(configuration)
 
-        productions[production[0]].extend(configuration)
-        
     print("Start state: ",start_symbol)
     print("Staert Stack: ",start_stack)
     print("Final states: ",acceptable_states)
