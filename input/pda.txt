@@ -550,6 +550,102 @@ q3 style Small q3 Small
 q3 text Small q3 Small
 q3 </small> Small q3 e
 
+q3 <hr> Body q3 HrBody
+q3 id Hr q3 Hr
+q3 class Hr q3 Hr
+q3 style Hr q3 Hr
+q3 </hr> Hr q3 e
+
+q3 <hr> Div q3 HrDiv
+q3 id Hr q3 Hr
+q3 class Hr q3 Hr
+q3 style Hr q3 Hr
+q3 </hr> Hr q3 e
+
+q3 <div> Body q3 DivBody
+q3 id Div q3 Div
+q3 class Div q3 Div
+q3 style Div q3 Div
+q3 </div> Div q3 e
+
+q3 <div> Div q3 DivDiv
+q3 id Div q3 Div
+q3 class Div q3 Div
+q3 style Div q3 Div
+q3 </div> Div q3 e
+
+q3 <a> Body q3 ABody
+q3 href A q3 A
+q3 id A q3 A
+q3 class A q3 A
+q3 style A q3 A
+q3 text A q3 A
+q3 </a> A q3 e
+
+q3 <a> Div q3 ADiv
+q3 href A q3 A
+q3 id A q3 A
+q3 class A q3 A
+q3 style A q3 A
+q3 text A q3 A
+q3 </a> A q3 e
+
+q3 <img> Body q3 SrcImgBody
+q3 src Src q3 e
+q3 alt Src q3 Src
+q3 alt Img q3 Img
+q3 id Src q3 Src
+q3 id Img q3 Img
+q3 class Src q3 Src
+q3 class Img q3 Img
+q3 style Src q3 Src
+q3 style Img q3 Img
+q3 </img> Img q3 e
+
+q3 <img> Div q3 SrcImgDiv
+q3 src Src q3 e
+q3 alt Src q3 Src
+q3 alt Img q3 Img
+q3 id Src q3 Src
+q3 id Img q3 Img
+q3 class Src q3 Src
+q3 class Img q3 Img
+q3 style Src q3 Src
+q3 style Img q3 Img
+q3 </img> Img q3 e
+
+q3 <table> Body q3 TableBody
+q3 id Table q3 Table
+q3 class Table q3 Table
+q3 style Table q3 Table
+q3 </table> Table q3 e
+
+q3 <table> Div q3 TableDiv
+q3 id Table q3 Table
+q3 class Table q3 Table
+q3 style Table q3 Table
+q3 </table> Table q3 e
+
+q3 <tr> Table q3 TrTable
+q3 id Tr q3 Tr
+q3 class Tr q3 Tr
+q3 style Tr q3 Tr
+q3 </tr> Tr q3 e
+
+q3 <td> Tr q3 TdTr
+q3 id Td q3 Td
+q3 class Td q3 Td
+q3 style Td q3 Td
+q3 text Td q3 Td
+q3 </td> Td q3 e
+
+q3 <th> Tr q3 TdTr
+q3 id Th q3 Th
+q3 class Th q3 Th
+q3 style Th q3 Th
+q3 text Th q3 Th
+q3 </th> Th q3 e
+
 q3 </body> Body q3 e
 
 q3 </html> Html q4 e
