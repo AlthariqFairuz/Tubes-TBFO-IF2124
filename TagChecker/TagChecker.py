@@ -139,13 +139,6 @@ def tag_checker(tag: str) -> bool:
         for rule in h6:
             if re.match(rule, tag):
                 return True
-    elif (tag.startswith("<p") and tag.endswith(">")) or (
-        tag.startswith("</p") and tag.endswith(">")
-    ):
-        p = attr_brute("p", [], [r'class=".*"', r'id=".*"', r'style=".*"'])
-        for rule in p:
-            if re.match(rule, tag):
-                return True
     elif tag.startswith("<br") and tag.endswith("/>"):
         br = attr_brute("br", [], [r'class=".*"', r'id=".*"', r'style=".*"'])
         for rule in br:
@@ -158,11 +151,15 @@ def tag_checker(tag: str) -> bool:
         for rule in em:
             if re.match(rule, tag):
                 return True
-    elif (tag.startswith("<b") and tag.endswith(">")) or (
-        tag.startswith("</b") and tag.endswith(">")
+    elif (tag.startswith("<button") and tag.endswith(">")) or (
+        tag.startswith("</button") and tag.endswith(">")
     ):
-        b = attr_brute("b", [], [r'class=".*"', r'id=".*"', r'style=".*"'])
-        for rule in b:
+        button = attr_brute(
+            "button",
+            [],
+            [r'class=".*"', r'id=".*"', r'style=".*"', r'type=".*"'],
+        )
+        for rule in button:
             if re.match(rule, tag):
                 return True
     elif (tag.startswith("<abbr") and tag.endswith(">")) or (
@@ -198,15 +195,6 @@ def tag_checker(tag: str) -> bool:
         for rule in div:
             if re.match(rule, tag):
                 return True
-    elif (tag.startswith("<a") and tag.endswith(">")) or (
-        tag.startswith("</a") and tag.endswith(">")
-    ):
-        a = attr_brute(
-            "a", [], [r'class=".*"', r'id=".*"', r'style=".*"', r'href=".*"']
-        )
-        for rule in a:
-            if re.match(rule, tag):
-                return True
     elif tag.startswith("<img") and tag.endswith("/>"):
         img = attr_brute(
             "img",
@@ -214,17 +202,6 @@ def tag_checker(tag: str) -> bool:
             [r'class=".*"', r'id=".*"', r'style=".*"', r'alt=".*"'],
         )
         for rule in img:
-            if re.match(rule, tag):
-                return True
-    elif (tag.startswith("<button") and tag.endswith(">")) or (
-        tag.startswith("</button") and tag.endswith(">")
-    ):
-        button = attr_brute(
-            "button",
-            [],
-            [r'class=".*"', r'id=".*"', r'style=".*"', r'type="submit|button|reset"'],
-        )
-        for rule in button:
             if re.match(rule, tag):
                 return True
     elif (tag.startswith("<form") and tag.endswith(">")) or (
@@ -238,7 +215,7 @@ def tag_checker(tag: str) -> bool:
                 r'id=".*"',
                 r'style=".*"',
                 r'action=".*"',
-                r'method="GET|POST"',
+                r'method=".*"',
             ],
         )
         for rule in form:
@@ -252,7 +229,7 @@ def tag_checker(tag: str) -> bool:
                 r'class=".*"',
                 r'id=".*"',
                 r'style=".*"',
-                r'type="text|password|email|number|checkbox"',
+                r'type=".*"',
             ],
         )
         for rule in input_tag:
@@ -288,5 +265,28 @@ def tag_checker(tag: str) -> bool:
                 return True
     elif tag.startswith("<!--") and tag.endswith("-->"):
         return True
+    elif (tag.startswith("<p") and tag.endswith(">")) or (
+        tag.startswith("</p") and tag.endswith(">")
+    ):
+        p = attr_brute("p", [], [r'class=".*"', r'id=".*"', r'style=".*"'])
+        for rule in p:
+            if re.match(rule, tag):
+                return True
+    elif (tag.startswith("<a") and tag.endswith(">")) or (
+        tag.startswith("</a") and tag.endswith(">")
+    ):
+        a = attr_brute(
+            "a", [], [r'class=".*"', r'id=".*"', r'style=".*"', r'href=".*"']
+        )
+        for rule in a:
+            if re.match(rule, tag):
+                return True
+    elif (tag.startswith("<b") and tag.endswith(">")) or (
+        tag.startswith("</b") and tag.endswith(">")
+    ):
+        b = attr_brute("b", [], [r'class=".*"', r'id=".*"', r'style=".*"'])
+        for rule in b:
+            if re.match(rule, tag):
+                return True
 
     return False
