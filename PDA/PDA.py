@@ -58,7 +58,7 @@ def get_moves(state, input, stack):
     global productions
 
     moves = []
-
+    # print("INI PRODUCTIONS",productions)
     for i in productions:
 
         if i != state:
@@ -67,10 +67,11 @@ def get_moves(state, input, stack):
         for j in productions[i]:
             current = j
             new = []
-
+            # print ("INI CURRENT",current)
             new.append(current[3])
             # Baca symbol input jika masih ada
             if len(current[0]) > 0:
+                # print("INI INPUT",input)
                 if len(input) > 0 and input[:len(current[0])] == current[0]:
                     new.append(input[len(current[0]):])
                 else:
@@ -79,6 +80,7 @@ def get_moves(state, input, stack):
                 new.append(input)
 
             # Baca stack symbol
+            # print("INI STACK",stack)
             if len(current[1]) > 0:
                 if len(stack) > 0 and stack[:len(current[1])] == current[1]:
                     new.append(current[2] + stack[len(current[1]):])
@@ -88,7 +90,6 @@ def get_moves(state, input, stack):
                 new.append(current[2] + stack)
 
             moves.append(new)
-    print(moves)
     return moves
 
 # Fungsi ini memeriksa apakah kata input diterima sesuai dengan kondisi penerimaan.
@@ -167,29 +168,30 @@ def file_parser(filename):
 
     return 1
 
-# Ask the user for the name of the configuration file
-config_file = input("Masukkan nama file konfigurasi: ")
+# # Ask the user for the name of the configuration file
+# config_file = input("Masukkan nama file konfigurasi: ")
 
-# Parse the configuration file
-if not file_parser(config_file):
-    print("Gagal membaca file konfigurasi.")
-    exit(1)
+# # Parse the configuration file
+# if not file_parser(config_file):
+#     print("Gagal membaca file konfigurasi.")
+#     exit(1)
 
-start_input = input("Masukkan kata yang akan dicek: ")
-def load_html (start_input):
-    with open(start_input, 'r') as file:
-        html = file.read()
-    return html
+# start_input = input("Masukkan kata yang akan dicek: ")
+# def load_html (start_input):
+#     with open(start_input, 'r') as file:
+#         html = file.read()
+#     return html
 
-start_input = load_html(start_input)
+# start_input = load_html(start_input)
+# print(start_input)
 
-# Generate the automaton with the given start symbol, input word, and start stack symbol
-result = generate(start_symbol, start_input, start_stack, [(start_symbol, start_input, start_stack)])
-if result :
-    print("""
-    ██╗░░░██╗░█████╗░██╗░░░░░██╗██████╗░  ██╗░░██╗████████╗███╗░░░███╗██╗░░░░░
-    ██║░░░██║██╔══██╗██║░░░░░██║██╔══██╗  ██║░░██║╚══██╔══╝████╗░████║██║░░░░░
-    ╚██╗░██╔╝███████║██║░░░░░██║██║░░██║  ███████║░░░██║░░░██╔████╔██║██║░░░░░
-    ░╚████╔╝░██╔══██║██║░░░░░██║██║░░██║  ██╔══██║░░░██║░░░██║╚██╔╝██║██║░░░░░
-    ░░╚██╔╝░░██║░░██║███████╗██║██████╔╝  ██║░░██║░░░██║░░░██║░╚═╝░██║███████╗
-    ░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚═╝╚═════╝░  ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░░░░╚═╝╚══════╝""")
+# # Generate the automaton with the given start symbol, input word, and start stack symbol
+# result = generate(start_symbol, start_input, start_stack, [(start_symbol, start_input, start_stack)])
+# if result :
+#     print("""
+#     ██╗░░░██╗░█████╗░██╗░░░░░██╗██████╗░  ██╗░░██╗████████╗███╗░░░███╗██╗░░░░░
+#     ██║░░░██║██╔══██╗██║░░░░░██║██╔══██╗  ██║░░██║╚══██╔══╝████╗░████║██║░░░░░
+#     ╚██╗░██╔╝███████║██║░░░░░██║██║░░██║  ███████║░░░██║░░░██╔████╔██║██║░░░░░
+#     ░╚████╔╝░██╔══██║██║░░░░░██║██║░░██║  ██╔══██║░░░██║░░░██║╚██╔╝██║██║░░░░░
+#     ░░╚██╔╝░░██║░░██║███████╗██║██████╔╝  ██║░░██║░░░██║░░░██║░╚═╝░██║███████╗
+#     ░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚═╝╚═════╝░  ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░░░░╚═╝╚══════╝""")
