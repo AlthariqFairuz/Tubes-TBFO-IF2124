@@ -1,5 +1,14 @@
-from TagChecker.TagChecker import tag_checker
+import re
 import shlex
+import csv
+
+
+def attrSplit(value):
+    lex = shlex.shlex(value)
+    lex.quotes = '"'
+    lex.whitespace_split = True
+    lex.commenters = ""
+    return list(lex)
 
 
 def invalid():
@@ -70,13 +79,9 @@ def tokenizer(html):
             list_of_tokens.append("sentence")
 
     # Check if the html tags are valid
-    is_valid = True
     list_of_seperated_tokens = list()
     for token in list_of_tokens:
-        if tag_checker(token) == False and token != "sentence":
-            is_valid = False
-            break
-        elif token == "sentence":
+        if token == "sentence":
             list_of_seperated_tokens.append(token)
         else:
             token = token[1:-1]
@@ -86,41 +91,42 @@ def tokenizer(html):
                 token = token[1:]
                 isClosing = True
 
-            separated = [elem.strip(" ") for elem in shlex.split(token)]
+            separated = list()
+            j = 0
+            isQuoted = False
+            if len(token.split()) > 1:
+                for i in range(len(token)):
+                    if token[i] == '"' and isQuoted == False:
+                        isQuoted = True
+                    elif token[i] == '"' and isQuoted == True:
+                        isQuoted = False
+                    elif token[i] == " " and isQuoted == False:
+                        separated.append(token[j:i])
+                        j = i + 1
+                separated.append(token[j:])
+            else:
+                separated.append(token)
+
             separated_tag = list()
             tag = separated[0]
             separated_tag.append(tag)
-            # print(separated)
-            for i in range(len(separated)):
-                if "=" in separated[i]:
-                    temp = separated[i].split("=")
-                    attr = temp[0]
-                    value = temp[1]
+            pattern = re.compile(r'^[^=]*="[^"]*"$')
+            for i in range(1, len(separated)):
+                match = pattern.match(separated[i])
+                if match:
+                    attr, value = separated[i].split("=")
                     separated_tag.append(attr)
-                    if tag == "button":
-                        if attr == "type":
-                            if value in ["submit", "reset", "button"]:
-                                separated_tag.append(value)
-                            else:
-                                separated_tag.append("invalid")
-                    elif tag == "form":
+                    if tag == "form":
                         if attr == "method":
-                            if value in ["GET", "POST"]:
-                                separated_tag.append(value.lower())
-                            else:
-                                separated_tag.append("invalid")
+                            separated_tag.append(value.strip('"').lower())
                     elif tag == "input":
                         if attr == "type":
-                            if value in [
-                                "text",
-                                "password",
-                                "email",
-                                "number",
-                                "checkbox",
-                            ]:
-                                separated_tag.append(value)
-                            else:
-                                separated_tag.append("invalid")
+                            separated_tag.append(value.strip('"'))
+                    elif tag == "button":
+                        if attr == "type":
+                            separated_tag.append(value.strip('"'))
+                else:
+                    separated_tag.append(separated[i])
 
             if tag in ["link", "br", "hr", "img", "input"]:
                 separated_tag[0] = "<" + tag + ">"
@@ -133,27 +139,4 @@ def tokenizer(html):
 
             list_of_seperated_tokens.extend(separated_tag)
 
-    if is_valid:
-        return list_of_seperated_tokens
-    else:
-        invalid()
-        print(f"Invalid Token: {token}")
-        exit(1)
-    # return list_of_seperated_tokens
-    # if is_valid:
-    #     # Return the list of tokens if valid
-    #     # Next: validate structure using PDA.
-    #     return list_of_tokens
-    # else:
-    #     # Invalid html tags
-    # print(
-    #     """
-    # ░██████╗██╗░░░██╗███╗░░██╗████████╗░█████╗░██╗░░██╗  ███████╗██████╗░██████╗░░█████╗░██████╗░
-    # ██╔════╝╚██╗░██╔╝████╗░██║╚══██╔══╝██╔══██╗╚██╗██╔╝  ██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗
-    # ╚█████╗░░╚████╔╝░██╔██╗██║░░░██║░░░███████║░╚███╔╝░  █████╗░░██████╔╝██████╔╝██║░░██║██████╔╝
-    # ░╚═══██╗░░╚██╔╝░░██║╚████║░░░██║░░░██╔══██║░██╔██╗░  ██╔══╝░░██╔══██╗██╔══██╗██║░░██║██╔══██╗
-    # ██████╔╝░░░██║░░░██║░╚███║░░░██║░░░██║░░██║██╔╝╚██╗  ███████╗██║░░██║██║░░██║╚█████╔╝██║░░██║
-    # ╚═════╝░░░░╚═╝░░░╚═╝░░╚══╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚═╝  ╚══════╝╚═╝░░╚═╝╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝"""
-    # )
-    # print(f"Invalid Token: {token}")
-    # exit(1)
+    return list_of_seperated_tokens

@@ -567,12 +567,14 @@ q3 <div> Body q3 DivBody
 q3 id Div q3 Div
 q3 class Div q3 Div
 q3 style Div q3 Div
+q3 sentence Div q3 Div
 q3 </div> Div q3 e
 
 q3 <div> Div q3 DivDiv
 q3 id Div q3 Div
 q3 class Div q3 Div
 q3 style Div q3 Div
+q3 sentence Div q3 Div
 q3 </div> Div q3 e
 
 q3 <a> Body q3 ABody
@@ -739,7 +741,7 @@ q3 style Td q3 Td
 q3 sentence Td q3 Td
 q3 </td> Td q3 e
 
-q3 <th> Tr q3 TdTr
+q3 <th> Tr q3 ThTr
 q3 id Th q3 Th
 q3 class Th q3 Th
 q3 style Th q3 Th

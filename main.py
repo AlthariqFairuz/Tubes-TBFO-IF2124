@@ -1,6 +1,16 @@
 from PDA import PDA
 from Tokenizer import Tokenizer as tokenize
-from TagChecker import TagChecker as tagcheck
+import argparse
+
+# Load arguments with argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("pda_filename", help="PDA filename")
+parser.add_argument("html_filename", help="HTML filename")
+args = parser.parse_args()
+
+# Get arguments
+pda_filename = args.pda_filename
+html_filename = args.html_filename
 
 def valid ():
     print("""
@@ -26,16 +36,13 @@ def load_html(filename):
         html = file.read()
     return html
 
-config_file = input("Masukkan nama file konfigurasi: ")
-
 # Parse the configuration file
-if not PDA.file_parser(config_file):
+if not PDA.file_parser(pda_filename):
     print("Gagal membaca file konfigurasi.")
     exit(1)
 
-# Ask the user for the word to check
-html_file = input("Masukkan file html yang akan di cek: ")
-html = load_html(html_file)
+# Tokenize html file
+html = load_html(html_filename)
 tokens = tokenize.tokenizer(html)
 
 
