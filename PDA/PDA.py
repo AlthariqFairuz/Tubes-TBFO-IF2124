@@ -43,7 +43,7 @@ def generate(state, input, stack, config):
         return 1
 
     # Jika tidak ditemukan, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
-    moves = get_moves(state, input, stack)
+    moves = check(state, input, stack)
     if len(moves) == 0:
         # Jika tidak ada gerakan yang mungkin untuk suatu state, maka akan mengembalikan 0
         return 0
@@ -174,32 +174,3 @@ def read_rules(filename):
     print("\n")
 
     return 1
-
-
-# # Ask the user for the name of the configuration file
-# config_file = input("Masukkan nama file konfigurasi: ")
-
-# # Parse the configuration file
-# if not file_parser(config_file):
-#     print("Gagal membaca file konfigurasi.")
-#     exit(1)
-
-# start_input = input("Masukkan kata yang akan dicek: ")
-# def load_html (start_input):
-#     with open(start_input, 'r') as file:
-#         html = file.read()
-#     return html
-
-# start_input = load_html(start_input)
-# print(start_input)
-
-# # Generate the automaton with the given start symbol, input word, and start stack symbol
-# result = generate(start_symbol, start_input, start_stack, [(start_symbol, start_input, start_stack)])
-# if result :
-#     print("""
-#     ██╗░░░██╗░█████╗░██╗░░░░░██╗██████╗░  ██╗░░██╗████████╗███╗░░░███╗██╗░░░░░
-#     ██║░░░██║██╔══██╗██║░░░░░██║██╔══██╗  ██║░░██║╚══██╔══╝████╗░████║██║░░░░░
-#     ╚██╗░██╔╝███████║██║░░░░░██║██║░░██║  ███████║░░░██║░░░██╔████╔██║██║░░░░░
-#     ░╚████╔╝░██╔══██║██║░░░░░██║██║░░██║  ██╔══██║░░░██║░░░██║╚██╔╝██║██║░░░░░
-#     ░░╚██╔╝░░██║░░██║███████╗██║██████╔╝  ██║░░██║░░░██║░░░██║░╚═╝░██║███████╗
-#     ░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚═╝╚═════╝░  ╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░░░░╚═╝╚══════╝""")
