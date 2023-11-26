@@ -1,14 +1,4 @@
 import re
-import shlex
-import csv
-
-
-def attrSplit(value):
-    lex = shlex.shlex(value)
-    lex.quotes = '"'
-    lex.whitespace_split = True
-    lex.commenters = ""
-    return list(lex)
 
 
 def invalid():
@@ -83,9 +73,13 @@ def tokenizer(html):
     for token in list_of_tokens:
         if token == "sentence":
             list_of_seperated_tokens.append(token)
+        elif token.startswith("<!--") and token.endswith("-->"):
+            if len(token) >= 7:
+                list_of_seperated_tokens.extend(["startcomment", "endcomment"])
+            else:
+                list_of_seperated_tokens.append(token)
         else:
             token = token[1:-1]
-
             isClosing = False
             if token[0] == "/":
                 token = token[1:]
