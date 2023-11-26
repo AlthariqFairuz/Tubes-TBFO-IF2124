@@ -1,19 +1,32 @@
-from TagChecker.TagChecker import tag_checker
+import re
 import shlex
+import csv
 
-def invalid () :    
-    print("""
+
+def attrSplit(value):
+    lex = shlex.shlex(value)
+    lex.quotes = '"'
+    lex.whitespace_split = True
+    lex.commenters = ""
+    return list(lex)
+
+
+def invalid():
+    print(
+        """
     ░██████╗██╗░░░██╗███╗░░██╗████████╗░█████╗░██╗░░██╗  ███████╗██████╗░██████╗░░█████╗░██████╗░
     ██╔════╝╚██╗░██╔╝████╗░██║╚══██╔══╝██╔══██╗╚██╗██╔╝  ██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗
     ╚█████╗░░╚████╔╝░██╔██╗██║░░░██║░░░███████║░╚███╔╝░  █████╗░░██████╔╝██████╔╝██║░░██║██████╔╝
     ░╚═══██╗░░╚██╔╝░░██║╚████║░░░██║░░░██╔══██║░██╔██╗░  ██╔══╝░░██╔══██╗██╔══██╗██║░░██║██╔══██╗
     ██████╔╝░░░██║░░░██║░╚███║░░░██║░░░██║░░██║██╔╝╚██╗  ███████╗██║░░██║██║░░██║╚█████╔╝██║░░██║
-    ╚═════╝░░░░╚═╝░░░╚═╝░░╚══╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚═╝  ╚══════╝╚═╝░░╚═╝╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝""")
+    ╚═════╝░░░░╚═╝░░░╚═╝░░╚══╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚═╝  ╚══════╝╚═╝░░╚═╝╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝"""
+    )
+
 
 def tokenizer(html):
     # List of tokens
-    # Token berisi tag-tag html atau SENTENCE diantara tag html
-    # Untuk SENTENCE, disimpan dalam "SENTENCE"
+    # Token berisi tag-tag html atau sentence diantara tag html
+    # Untuk sentence, disimpan dalam "sentence"
     # Untuk tag html, disimpan dalam "<tag>" atau "</tag>"" atau "<tag />"
     list_of_tokens = list()
     current_token = ""
@@ -25,7 +38,7 @@ def tokenizer(html):
 
         if char == "<":
             # Jika current_token tidak kosong,
-            # Ada SENTENCE sebelum <tag> atau </tag> misal: foo</p>
+            # Ada sentence sebelum <tag> atau </tag> misal: foo</p>
             # Atau tag < yang berlebihan, misal: <<p>
             if current_token != "":
                 # Close tag
@@ -49,8 +62,8 @@ def tokenizer(html):
             if is_tag:
                 current_token += char
             else:
-                # Jika is_tag == False, artinya sedang membaca SENTENCE
-                # Detect character pertama dari SENTENCE (currentToken kosong)
+                # Jika is_tag == False, artinya sedang membaca sentence
+                # Detect character pertama dari sentence (currentToken kosong)
                 if (
                     current_token == ""
                     and char != " "
@@ -58,108 +71,72 @@ def tokenizer(html):
                     and char != "\t"
                     and char != "\r"
                 ):
-                    current_token += "SENTENCE"
+                    current_token += "sentence"
 
         # i = len(html) - 1 dan current_token belum kosong
-        # Artinya SENTENCE diakhir seperti </html>BACA_INI (INVALID, divalidasi di PDA.)
+        # Artinya sentence diakhir seperti </html>BACA_INI (invalid, divalidasi di PDA.)
         if (i == len(html) - 1) and (current_token != ""):
-            list_of_tokens.append("SENTENCE")
-
-    # Filter the tokens to tags only
-    list_of_tags = list(
-        filter(lambda x: x.startswith("<") or x.endswith(">"), list_of_tokens)
-    )
+            list_of_tokens.append("sentence")
 
     # Check if the html tags are valid
-    is_valid = True
     list_of_seperated_tokens = list()
     for token in list_of_tokens:
-        if tag_checker(token) == False and token != "SENTENCE":
-            is_valid = False
-            break
-        elif token == "SENTENCE":
+        if token == "sentence":
             list_of_seperated_tokens.append(token)
         else:
             token = token[1:-1]
 
             isClosing = False
-            if token[-1] == "/":
-                token = token[:-1]
-                isClosing = True
-            elif token[0] == "/":
+            if token[0] == "/":
                 token = token[1:]
                 isClosing = True
 
-            separated = [elem.strip(" ") for elem in shlex.split(token)]
-            tag = separated[0]
+            separated = list()
+            j = 0
+            isQuoted = False
+            if len(token.split()) > 1:
+                for i in range(len(token)):
+                    if token[i] == '"' and isQuoted == False:
+                        isQuoted = True
+                    elif token[i] == '"' and isQuoted == True:
+                        isQuoted = False
+                    elif token[i] == " " and isQuoted == False:
+                        separated.append(token[j:i])
+                        j = i + 1
+                separated.append(token[j:])
+            else:
+                separated.append(token)
 
-            for i in range(len(separated)):
-                if "=" in separated[i]:
-                    temp = separated[i].split("=")
-                    attr = temp[0]
-                    value = temp[1]
-                    separated[i] = attr
-                    if tag == "button":
-                        if attr == "type":
-                            if value in ["submit", "reset", "button"]:
-                                separated.insert(i + 1, value)
-                            else:
-                                separated.insert(i + 1, "INVALID")
-                            i += 1
-                    elif tag == "form":
+            separated_tag = list()
+            tag = separated[0]
+            separated_tag.append(tag)
+            pattern = re.compile(r'^[^=]*="[^"]*"$')
+            for i in range(1, len(separated)):
+                match = pattern.match(separated[i])
+                if match:
+                    attr, value = separated[i].split("=")
+                    separated_tag.append(attr)
+                    if tag == "form":
                         if attr == "method":
-                            if value in ["GET", "POST"]:
-                                separated.insert(i + 1, value)
-                            else:
-                                separated.insert(i + 1, "INVALID")
-                            i += 1
+                            separated_tag.append(value.strip('"').lower())
                     elif tag == "input":
                         if attr == "type":
-                            if value in [
-                                "text",
-                                "password",
-                                "email",
-                                "number",
-                                "checkbox",
-                            ]:
-                                separated.insert(i + 1, value)
-                            else:
-                                separated.insert(i + 1, "INVALID")
-                            i += 1
+                            separated_tag.append(value.strip('"'))
+                    elif tag == "button":
+                        if attr == "type":
+                            separated_tag.append(value.strip('"'))
+                else:
+                    separated_tag.append(separated[i])
 
             if tag in ["link", "br", "hr", "img", "input"]:
-                separated[0] = "<" + tag + ">"
-                separated.append("</" + tag + ">")
+                separated_tag[0] = "<" + tag + ">"
+                separated_tag.append("</" + tag + ">")
             else:
                 if isClosing:
-                    separated[0] = "</" + tag + ">"
+                    separated_tag[0] = "</" + tag + ">"
                 else:
-                    separated[0] = "<" + tag + ">"
+                    separated_tag[0] = "<" + tag + ">"
 
-            list_of_seperated_tokens.extend(separated)
+            list_of_seperated_tokens.extend(separated_tag)
 
-
-    if is_valid:
-        return list_of_seperated_tokens
-    else:
-        invalid()
-        print(f"Invalid Token: {token}")
-        exit(1)
-    # return list_of_seperated_tokens   
-    # if is_valid:
-    #     # Return the list of tokens if valid
-    #     # Next: validate structure using PDA.
-    #     return list_of_tokens
-    # else:
-    #     # Invalid html tags
-        # print(
-        #     """
-        # ░██████╗██╗░░░██╗███╗░░██╗████████╗░█████╗░██╗░░██╗  ███████╗██████╗░██████╗░░█████╗░██████╗░
-        # ██╔════╝╚██╗░██╔╝████╗░██║╚══██╔══╝██╔══██╗╚██╗██╔╝  ██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗
-        # ╚█████╗░░╚████╔╝░██╔██╗██║░░░██║░░░███████║░╚███╔╝░  █████╗░░██████╔╝██████╔╝██║░░██║██████╔╝
-        # ░╚═══██╗░░╚██╔╝░░██║╚████║░░░██║░░░██╔══██║░██╔██╗░  ██╔══╝░░██╔══██╗██╔══██╗██║░░██║██╔══██╗
-        # ██████╔╝░░░██║░░░██║░╚███║░░░██║░░░██║░░██║██╔╝╚██╗  ███████╗██║░░██║██║░░██║╚█████╔╝██║░░██║
-        # ╚═════╝░░░░╚═╝░░░╚═╝░░╚══╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚═╝  ╚══════╝╚═╝░░╚═╝╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝"""
-        # )
-        # print(f"Invalid Token: {token}")
-        # exit(1)
+    return list_of_seperated_tokens

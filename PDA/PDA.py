@@ -1,11 +1,11 @@
 # Simpan kata yang akan di cek oleh PDA
-start_input = "" 
+start_input = ""
 
 # Penannda apakah diterima PDA atau tidak
-found = 0 
+found = 0
 
 # Simpan konfigurasi yang diterima
-accepted_config = [] 
+accepted_config = []
 
 # Production rules ("read input", "pop stack", "push stack", "next state")
 productions = {}
@@ -22,6 +22,7 @@ acceptable_states = []
 # E = empty stack, F = final state
 accept_with = ""
 
+
 def generate(state, input, stack, config):
     global productions
     global found
@@ -34,24 +35,25 @@ def generate(state, input, stack, config):
 
     if is_accepted(state, input, stack):
         # Tanda bahwa input sudah diterima oleh PDA jadinya tree node lainnya akan berhenti
-        found = 1 
-        
+        found = 1
+
         # Tambahkan konfigurasi yang diterima ke dalam array accepted_config
         accepted_config.extend(config)
 
         return 1
-    
-	# Jika tidak ditemukan, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
-    moves = check(state, input, stack)
+
+    # Jika tidak ditemukan, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
+    moves = get_moves(state, input, stack)
     if len(moves) == 0:
-		# Jika tidak ada gerakan yang mungkin untuk suatu state, maka akan mengembalikan 0
+        # Jika tidak ada gerakan yang mungkin untuk suatu state, maka akan mengembalikan 0
         return 0
 
-	# Jika ada gerakan yang mungkin, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
+    # Jika ada gerakan yang mungkin, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
     for i in moves:
-        total = total + generate(i[0], i[1], i[2], config + [(i[0], i[1], i[2])])  
+        total = total + generate(i[0], i[1], i[2], config + [(i[0], i[1], i[2])])
 
     return total
+
 
 # Fungsi untuk mendapatkan semua gerakan yang mungkin dari state, input, dan stack yang diberikan
 def check(state, input, stack):
@@ -60,7 +62,6 @@ def check(state, input, stack):
     moves = []
     # print("INI PRODUCTIONS",productions)
     for i in productions:
-
         if i != state:
             continue
 
@@ -72,18 +73,18 @@ def check(state, input, stack):
             # Baca symbol input jika masih ada
             if len(current[0]) > 0:
                 # print("INI INPUT",input)
-                if len(input) > 0 and input[:len(current[0])] == current[0]:
-                    new.append(input[len(current[0]):])
+                if len(input) > 0 and input[: len(current[0])] == current[0]:
+                    new.append(input[len(current[0]) :])
                 else:
                     continue
-            else:            
+            else:
                 new.append(input)
 
             # Baca stack symbol
             # print("INI STACK",stack)
             if len(current[1]) > 0:
-                if len(stack) > 0 and stack[:len(current[1])] == current[1]:
-                    new.append(current[2] + stack[len(current[1]):])
+                if len(stack) > 0 and stack[: len(current[1])] == current[1]:
+                    new.append(current[2] + stack[len(current[1]) :])
                 else:
                     continue
             else:
@@ -92,28 +93,30 @@ def check(state, input, stack):
             moves.append(new)
     return moves
 
+
 # Fungsi ini memeriksa apakah kata input diterima sesuai dengan kondisi penerimaan.
 def is_accepted(state, input, stack):
     global accept_with
     global acceptable_states
 
     # Cek apakah semua symbol sudah dibaca
-    if len(input) > 0: 
+    if len(input) > 0:
         return 0
 
     # Cek apakah diterima dengan empty stack atau final state
     if accept_with == "E":
-        if len(stack) < 1: 
+        if len(stack) < 1:
             return 1
 
         return 0
 
     else:
         for i in acceptable_states:
-            if i == state: 
+            if i == state:
                 return 1
 
         return 0
+
 
 # Fungsi ini membaca file dan mengurai PDA darinya.
 def read_rules(filename):
@@ -139,34 +142,39 @@ def read_rules(filename):
     acceptable_states.extend(lines[5].split())
 
     # E = empty stack, F = final state
-    accept_with = lines[6] 
+    accept_with = lines[6]
 
     # Add rules
     for i in range(7, len(lines)):
         line = lines[i].strip()  # Abaikan Newline atau Whitespace
         if line:  # Line akan di split jika tidak ada newline
             production = line.split()
-            configuration = [(production[1], production[2], production[4], production[3])]
-            if not production[0] in productions.keys(): 
+            configuration = [
+                (production[1], production[2], production[4], production[3])
+            ]
+            if not production[0] in productions.keys():
                 productions[production[0]] = []
-            configuration = [tuple(s if s != "e" else "" for s in tup) for tup in configuration]
+            configuration = [
+                tuple(s if s != "e" else "" for s in tup) for tup in configuration
+            ]
 
             productions[production[0]].extend(configuration)
 
-    print("Start state: ",start_symbol)
-    print("Staert Stack: ",start_stack)
-    print("Final states: ",acceptable_states)
+    print("Start state: ", start_symbol)
+    print("Staert Stack: ", start_stack)
+    print("Final states: ", acceptable_states)
     if accept_with == "E":
         print("Accept with empty stack")
     else:
         print("Accept with final state")
     print("List of production rules: ")
-    for i in range (7, len(lines)):
-        rules= lines[i].split()
+    for i in range(7, len(lines)):
+        rules = lines[i].split()
         print(rules)
     print("\n")
 
     return 1
+
 
 # # Ask the user for the name of the configuration file
 # config_file = input("Masukkan nama file konfigurasi: ")

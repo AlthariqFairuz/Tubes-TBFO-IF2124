@@ -20,6 +20,9 @@ def attr_brute(tag: str, req_attr: list[str], opt_attr: list[str] = []) -> list[
         else:
             attr_rules = []
 
+        # append closing tag
+        attr_rules.append(re.compile(r"</" + tag + r"\s*>"))
+
         # req_attr must exist in every combination
         for i in range(0, len(opt_attr) + 1):
             for kemungkinan in combinations(opt_attr, i):
@@ -28,12 +31,9 @@ def attr_brute(tag: str, req_attr: list[str], opt_attr: list[str] = []) -> list[
                     attr_rules.append(
                         re.compile(r"<" + tag + r"\s+" + r"\s+".join(rule) + r"\s*>")
                     )
-
-        # append closing tag
-        attr_rules.append(re.compile(r"</" + tag + r"\s*>"))
     else:
         if len(req_attr) == 0:
-            attr_rules = attr_rules = [re.compile(r"<" + tag + r"/>")]
+            attr_rules = attr_rules = [re.compile(r"<" + tag + r">")]
         else:
             attr_rules = []
 
@@ -42,10 +42,10 @@ def attr_brute(tag: str, req_attr: list[str], opt_attr: list[str] = []) -> list[
                 attr_rule = req_attr + list(kemungkinan)
                 for rule in permutations(attr_rule):
                     attr_rules.append(
-                        re.compile(r"<" + tag + r"\s+" + r"\s+".join(rule) + r"\s*/>")
+                        re.compile(r"<" + tag + r"\s+" + r"\s+".join(rule) + r"\s*>")
                     )
 
-    return attr_rules
+    return list(reversed(attr_rules))
 
 
 def tag_checker(tag: str) -> bool:
@@ -79,7 +79,7 @@ def tag_checker(tag: str) -> bool:
         for rule in title:
             if re.match(rule, tag):
                 return True
-    elif tag.startswith("<link") and tag.endswith("/>"):
+    elif tag.startswith("<link") and tag.endswith(">"):
         link = attr_brute(
             "link",
             [r'rel=".*"'],
@@ -139,7 +139,7 @@ def tag_checker(tag: str) -> bool:
         for rule in h6:
             if re.match(rule, tag):
                 return True
-    elif tag.startswith("<br") and tag.endswith("/>"):
+    elif tag.startswith("<br") and tag.endswith(">"):
         br = attr_brute("br", [], [r'class=".*"', r'id=".*"', r'style=".*"'])
         for rule in br:
             if re.match(rule, tag):
@@ -183,7 +183,7 @@ def tag_checker(tag: str) -> bool:
         for rule in small:
             if re.match(rule, tag):
                 return True
-    elif tag.startswith("<hr") and tag.endswith("/>"):
+    elif tag.startswith("<hr") and tag.endswith(">"):
         hr = attr_brute("hr", [], [r'class=".*"', r'id=".*"', r'style=".*"'])
         for rule in hr:
             if re.match(rule, tag):
@@ -195,7 +195,7 @@ def tag_checker(tag: str) -> bool:
         for rule in div:
             if re.match(rule, tag):
                 return True
-    elif tag.startswith("<img") and tag.endswith("/>"):
+    elif tag.startswith("<img") and tag.endswith(">"):
         img = attr_brute(
             "img",
             [r'src=".*"'],
@@ -221,7 +221,7 @@ def tag_checker(tag: str) -> bool:
         for rule in form:
             if re.match(rule, tag):
                 return True
-    elif tag.startswith("<input") and tag.endswith("/>"):
+    elif tag.startswith("<input") and tag.endswith(">"):
         input_tag = attr_brute(
             "input",
             [r'type=".*"'],
