@@ -32,7 +32,7 @@ def generate(state, input, stack, config):
     if found:
         return 0
 
-    if is_found(state, input, stack):
+    if is_accepted(state, input, stack):
         # Tanda bahwa input sudah diterima oleh PDA jadinya tree node lainnya akan berhenti
         found = 1 
         
@@ -42,7 +42,7 @@ def generate(state, input, stack, config):
         return 1
     
 	# Jika tidak ditemukan, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
-    moves = get_moves(state, input, stack)
+    moves = check(state, input, stack)
     if len(moves) == 0:
 		# Jika tidak ada gerakan yang mungkin untuk suatu state, maka akan mengembalikan 0
         return 0
@@ -54,7 +54,7 @@ def generate(state, input, stack, config):
     return total
 
 # Fungsi untuk mendapatkan semua gerakan yang mungkin dari state, input, dan stack yang diberikan
-def get_moves(state, input, stack):
+def check(state, input, stack):
     global productions
 
     moves = []
@@ -93,7 +93,7 @@ def get_moves(state, input, stack):
     return moves
 
 # Fungsi ini memeriksa apakah kata input diterima sesuai dengan kondisi penerimaan.
-def is_found(state, input, stack):
+def is_accepted(state, input, stack):
     global accept_with
     global acceptable_states
 
@@ -116,7 +116,7 @@ def is_found(state, input, stack):
         return 0
 
 # Fungsi ini membaca file dan mengurai PDA darinya.
-def file_parser(filename):
+def read_rules(filename):
     global productions
     global start_symbol
     global start_stack
@@ -133,7 +133,7 @@ def file_parser(filename):
 
     start_stack = lines[2]
     start_symbol = lines[3]
-
+    
     start_stack = lines[4]
 
     acceptable_states.extend(lines[5].split())
