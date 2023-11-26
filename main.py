@@ -37,7 +37,7 @@ args = parser.parse_args()
 
 # Parse rules PDA
 if not PDA.read_rules(args.ConfigFile):
-    print("Gagal membaca file.txt.")
+    print("Gagal membaca file konfigurasi.")
     exit(1)
 
 html = load_html(args.HtmlFile)
