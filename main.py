@@ -1,3 +1,4 @@
+import os
 import argparse
 from PDA import PDA
 from Tokenizer import Tokenizer as tokenize
@@ -35,15 +36,19 @@ parser.add_argument("HtmlFile", metavar="html", type=str, help="HTML yang akan d
 
 args = parser.parse_args()
 
+# Directory testcase dan pda di file input
+input_dir = 'input'
+
 # Parse rules PDA
-if not PDA.read_rules(args.ConfigFile):
+if not PDA.read_rules(os.path.join(input_dir, args.ConfigFile)):
     print("Gagal membaca file konfigurasi.")
     exit(1)
 
-html = load_html(args.HtmlFile)
+# Load the HTML file
+html = load_html(os.path.join(input_dir, args.HtmlFile))
 tokens = tokenize.tokenizer(html)
 
-# Generate autoamta dengan start symbol, input word, dan start stack symbol yang ada
+# Generate the automaton with the given start symbol, input word, and start stack symbol
 result = PDA.generate(PDA.start_symbol, "".join(tokens), PDA.start_stack, [(PDA.start_symbol, "".join(tokens), PDA.start_stack)])
 
 if result == 1:

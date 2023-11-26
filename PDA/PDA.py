@@ -44,6 +44,7 @@ def generate(state, input, stack, config):
 
     # Jika tidak ditemukan, maka akan dilakukan generate gerakan yang mungkin dari state, input, dan stack yang diberikan
     moves = check(state, input, stack)
+    print(moves)
     if len(moves) == 0:
         # Jika tidak ada gerakan yang mungkin untuk suatu state, maka akan mengembalikan 0
         return 0
